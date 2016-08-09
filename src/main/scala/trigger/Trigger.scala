@@ -7,7 +7,7 @@ class Trigger(val table: Table) {
 
   def getDropStatements: List[DropStatement] = null
 
-  def getCreateTriggerStatement: CreateTriggerStatement = null
+  def getCreateTriggerStatements: List[CreateTriggerStatement] = null
 
   def getCreateTableStatement: CreateTableStatement = null
 

@@ -1,7 +1,8 @@
-import java.io.File
+import java.io.{File, PrintWriter}
 
 import parser.HibernateTypes.HibernateTypes
 import parser.{HibernateTypes, Parser}
+import trigger.Trigger
 
 object HibernateTrigger {
 
@@ -51,8 +52,13 @@ object HibernateTrigger {
         val parser = new Parser(config.inputFile, config.verbose)
         val tables = parser.parseXML
 
-        // Create Trigger Object
+        if (config.debug != null)
+          saveDebugOutput(tables, config.debug)
+
+        // Create Trigger Objects
         println("Step 2 of 3: Creating Triggers")
+        val triggers = for (table <- tables) yield new Trigger(table)
+
 
         // TODO
 
@@ -63,7 +69,47 @@ object HibernateTrigger {
 
     }
 
+
   }
+
+  private def saveDebugOutput(tables: List[parser.Table], debugFile: File): Unit = {
+
+    println("Generating Debug Output...")
+
+    var outputString: String = "Info: The Debug Output ignores the exclude-flag!\n"
+
+    for (table <- tables) {
+
+      outputString += "\n" + table.tableName
+
+      outputString += "\n\tbags:\t\t"
+      for (bag <- table.bags) outputString += bag + ", "
+
+      outputString += "\n\tids:\t\t"
+      for (id <- table.ids) outputString += id + ", "
+
+      outputString += "\n\tproperties:\t"
+      for (prop <- table.properties) outputString += prop + ", "
+
+      outputString += "\n\tonetomanys:\t"
+      for (otm <- table.manyToOnes) outputString += otm + ", "
+
+    }
+
+    println("Generated Debug File. Saving now...")
+
+    try {
+      new PrintWriter(debugFile) {
+        write(outputString)
+        close()
+      }
+      println("Saved debug file to " + debugFile.getAbsolutePath)
+    } catch {
+      case e: Exception => println("ERROR while saving debug file!")
+    }
+
+  }
+
 
   case class Config(prefix: String = "",
                     clear: Boolean = false,
