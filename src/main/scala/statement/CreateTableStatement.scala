@@ -1,0 +1,5 @@
+package statement
+
+class CreateTableStatement {
+
+}
