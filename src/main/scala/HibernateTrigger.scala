@@ -2,7 +2,7 @@ import java.io.{File, PrintWriter}
 
 import parser.HibernateTypes.HibernateTypes
 import parser.{HibernateTypes, Parser}
-import statement.Statement
+import statement.{SQLUtil, Statement}
 import trigger.Trigger
 
 import scala.collection.mutable.ListBuffer
@@ -51,9 +51,12 @@ object HibernateTrigger {
       case None => // argument fail
       case Some(config) =>
 
+        if (config.exclude.nonEmpty)
+          println("WARNING: Exclude is not yet implemented!")
+
         // Create Parser and parse hibernate xml
         println("Step 1 of 3: Parsing Hibernate XML File")
-        val parser = new Parser(config.inputFile, config.verbose, config.prefix)
+        val parser = new Parser(config.inputFile, config.verbose)
         val tables = parser.parseXML
 
         if (config.debug != null)
@@ -61,32 +64,33 @@ object HibernateTrigger {
 
         // Create Trigger Objects & Statements
         println("Step 2 of 3: Creating Triggers")
-        val triggers = for (table <- tables) yield new Trigger(table)
-        val statements = ListBuffer[Statement]()
+        val triggers = for (table <- tables) yield new Trigger(table, config.prefix)
+        var statements = ListBuffer[Statement]()
 
         if (config.clear) {
+          if (config.verbose) println("Generating Clear Statements")
           for (trigger <- triggers)
             statements += trigger.getClearStatement
-        } else {
-          for (trigger <- triggers)
-            statements ++ trigger.getDropStatements
 
+        } else {
+          if (config.verbose) println("Generating Drop Statements")
+          for (trigger <- triggers) {
+            statements ++= trigger.getDropStatements
+          }
           if (!config.reset) {
+            if (config.verbose) println("Generating Create Statements")
             for (trigger <- triggers) {
               statements += trigger.getCreateTableStatement
-              statements ++ trigger.getCreateTriggerStatements
+              statements ++= trigger.getCreateTriggerStatements
             }
           }
         }
 
         // Print Statements
         println("Step 3 of 3: Writing SQL File")
-
-      // TODO
+        SQLUtil.writeSQL(config.outputFile, statements.toList)
 
     }
-
-
   }
 
   private def saveDebugOutput(tables: List[parser.Table], debugFile: File): Unit = {
@@ -126,7 +130,6 @@ object HibernateTrigger {
     }
 
   }
-
 
   case class Config(prefix: String = "ht_",
                     clear: Boolean = false,

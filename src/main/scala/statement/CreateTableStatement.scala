@@ -16,7 +16,7 @@ class CreateTableStatement(val tableName: String,
     if (primaryKey != null && primaryKey.length > 0 && content.contains(primaryKey))
       returnString += "PRIMARY KEY (`" + primaryKey + "`)"
 
-    returnString + "\n)"
+    returnString + "\n);"
   }
 
 
