@@ -9,12 +9,12 @@ class CreateTriggerStatement(val triggerName: String,
                              val code: String) extends Statement {
 
   override def toString: String = {
-    var returnString = "CREATE TRIGGER `" + triggerName + "` AFTER " +
+    var returnString = "DELIMITER $\nCREATE TRIGGER `" + triggerName + "` AFTER " +
       triggerType.toString + " ON `" + tableName + "`\n"
 
     if (forEachRow) returnString += "FOR EACH ROW\n"
 
-    returnString += "BEGIN\n" + code + "\nEND;"
+    returnString += "BEGIN\n" + code + "\nEND $\nDELIMITER ;"
 
     returnString
   }

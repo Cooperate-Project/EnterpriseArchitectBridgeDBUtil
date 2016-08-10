@@ -35,7 +35,7 @@ object TriggerUtil {
 
     code += "REPLACE INTO " + prefix + table.tableName + " VALUES(OLD." + primaryKey + ", NOW());\nEND IF;"
 
-    new CreateTriggerStatement(table.tableName + "Trigger", TriggerTypes.UPDATE, table.tableName, true, code)
+    new CreateTriggerStatement(prefix + table.tableName + "Trigger", TriggerTypes.UPDATE, table.tableName, true, code)
   }
 
   // TODO: Insert / Delete Trigger
