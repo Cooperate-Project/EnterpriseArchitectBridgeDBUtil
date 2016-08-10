@@ -35,7 +35,7 @@ object HibernateTrigger {
     opt[File]('d', "debug").valueName("<file>").action((x, c) =>
       c.copy(debug = x)).text("Prints all parsed Tables and Columns into an debug file")
 
-    opt[Seq[HibernateTypes]]('e', "exclude").valueName("<type>,<type>,...").action((x, c) =>
+    opt[Seq[HibernateTypes]]('e', "exclude").hidden().valueName("<type>,<type>,...").action((x, c) =>
       c.copy(exclude = x)).text("Does not print specific hibernate-types (ID, Property, ManyToOne, Bag)")
 
     opt[Unit]('r', "reset").action((_, c) =>
