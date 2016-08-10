@@ -10,7 +10,7 @@ class CreateTableStatement(val tableName: String,
     var returnString = "CREATE TABLE `" + tableName + "`\n(\n"
 
     for ((columnName, columnType) <- content) {
-      returnString += "`" + columnName + "` " + columnType + "\n"
+      returnString += "`" + columnName + "` " + columnType + ",\n"
     }
 
     if (primaryKey != null && primaryKey.length > 0 && content.contains(primaryKey))

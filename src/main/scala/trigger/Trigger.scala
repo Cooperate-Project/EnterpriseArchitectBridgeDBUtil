@@ -1,7 +1,7 @@
 package trigger
 
 import parser.Table
-import statement.{CreateTableStatement, CreateTriggerStatement, DeleteStatement, DropStatement}
+import statement._
 
 class Trigger(val table: Table) {
 

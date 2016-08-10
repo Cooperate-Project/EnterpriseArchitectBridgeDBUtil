@@ -6,7 +6,7 @@ class CreateTriggerStatement(val triggerName: String,
                              val triggerType: TriggerTypes,
                              val tableName: String,
                              val forEachRow: Boolean,
-                             val code: String) {
+                             val code: String) extends Statement {
 
   override def toString: String = {
     var returnString = "CREATE TRIGGER `" + triggerName + "` AFTER " +

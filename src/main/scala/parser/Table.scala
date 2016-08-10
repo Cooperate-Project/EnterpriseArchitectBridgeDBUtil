@@ -19,7 +19,10 @@ object Table {
 
 }
 
+
 object HibernateTypes extends Enumeration {
   type HibernateTypes = Value
+
+  // Potenzielle Fehlerquelle: Gibt es noch andere Typen?
   val id, property, manytoone, bag = Value
 }

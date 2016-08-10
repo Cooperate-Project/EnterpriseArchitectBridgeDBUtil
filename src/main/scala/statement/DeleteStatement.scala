@@ -1,6 +1,6 @@
 package statement
 
-class DeleteStatement(val tableName: String, val whereClause: String) {
+class DeleteStatement(val tableName: String, val whereClause: String) extends Statement {
 
   def this(tableName: String) = this(tableName, "")
 

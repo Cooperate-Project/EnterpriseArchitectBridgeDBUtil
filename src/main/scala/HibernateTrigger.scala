@@ -2,7 +2,10 @@ import java.io.{File, PrintWriter}
 
 import parser.HibernateTypes.HibernateTypes
 import parser.{HibernateTypes, Parser}
+import statement.Statement
 import trigger.Trigger
+
+import scala.collection.mutable.ListBuffer
 
 object HibernateTrigger {
 
@@ -16,11 +19,12 @@ object HibernateTrigger {
       validate(x => if (x.exists()) success else failure("Input file not found")).
       text("Specify input hibernate xml file")
 
-    arg[File]("<output sql>").optional().action((x, c) =>
+    arg[File]("<output sql>").action((x, c) =>
       c.copy(outputFile = x)).text("Specify output sql file")
 
     opt[String]('p', "prefix").valueName("<prefix>").action((x, c) =>
-      c.copy(prefix = x)).text("Table and trigger name prefix in database")
+      c.copy(prefix = x)).validate(x => if (x.length < 1) failure("Empty prefix") else success).
+      text("Table and trigger name prefix in database")
 
     opt[Unit]('c', "clear").action((_, c) =>
       c.copy(clear = true)).text("Creates statements to empty all trigger tables")
@@ -49,20 +53,33 @@ object HibernateTrigger {
 
         // Create Parser and parse hibernate xml
         println("Step 1 of 3: Parsing Hibernate XML File")
-        val parser = new Parser(config.inputFile, config.verbose)
+        val parser = new Parser(config.inputFile, config.verbose, config.prefix)
         val tables = parser.parseXML
 
         if (config.debug != null)
           saveDebugOutput(tables, config.debug)
 
-        // Create Trigger Objects
+        // Create Trigger Objects & Statements
         println("Step 2 of 3: Creating Triggers")
         val triggers = for (table <- tables) yield new Trigger(table)
+        val statements = ListBuffer[Statement]()
 
+        if (config.clear) {
+          for (trigger <- triggers)
+            statements += trigger.getClearStatement
+        } else {
+          for (trigger <- triggers)
+            statements ++ trigger.getDropStatements
 
-        // TODO
+          if (!config.reset) {
+            for (trigger <- triggers) {
+              statements += trigger.getCreateTableStatement
+              statements ++ trigger.getCreateTriggerStatements
+            }
+          }
+        }
 
-        // Create Statements
+        // Print Statements
         println("Step 3 of 3: Writing SQL File")
 
       // TODO
@@ -111,7 +128,7 @@ object HibernateTrigger {
   }
 
 
-  case class Config(prefix: String = "",
+  case class Config(prefix: String = "ht_",
                     clear: Boolean = false,
                     verbose: Boolean = false,
                     debug: File = null,

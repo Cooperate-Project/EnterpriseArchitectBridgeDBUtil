@@ -7,7 +7,7 @@ import parser.HibernateTypes.HibernateTypes
 import scala.collection.mutable.ListBuffer
 import scala.xml.{NodeSeq, XML}
 
-class Parser(inputFile: File, verbose: Boolean) {
+class Parser(inputFile: File, verbose: Boolean, prefix: String) {
 
   def parseXML: List[Table] = {
 
@@ -20,9 +20,8 @@ class Parser(inputFile: File, verbose: Boolean) {
 
     for (xmlClass <- hibernateXML \\ "class") {
 
-      val tableName = (xmlClass \ "@table").text.replace("`", "")
+      val tableName = prefix + (xmlClass \ "@table").text.replace("`", "")
       if (verbose) println("Parsing class: " + tableName)
-
 
       val ids = getColumns(xmlClass, HibernateTypes.id)
       val properties = getColumns(xmlClass, HibernateTypes.property)

@@ -1,5 +1,5 @@
 package statement
 
-abstract class Statement {
+trait Statement {
 
 }
