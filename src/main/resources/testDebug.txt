@@ -5,53 +5,64 @@ t_attribute
 	ids:		ID, 
 	properties:	AllowDuplicates, ea_guid, Classifier, Container, Containment, Default, IsCollection, Const, Derived, IsOrdered, IsStatic, Length, LowerBound, Name, Notes, Pos, Precision, Scale, Stereotype, Style, StyleEx, Type, UpperBound, Scope, GenOption, 
 	onetomanys:	Object_ID, 
+	compositeIds: 
 t_attributeconstraints
 	bags:		
 	ids:		
 	properties:	AttName, Notes, Type, 
 	onetomanys:	Object_ID, 
+	compositeIds: ID, Constraint, 
 t_attributetag
 	bags:		
 	ids:		PropertyID, 
 	properties:	Property, NOTES, ea_guid, VALUE, 
 	onetomanys:	ElementID, 
+	compositeIds: 
 t_connector
 	bags:		
 	ids:		Connector_ID, 
 	properties:	ea_guid, Direction, PtEndX, PtEndY, EventFlags, IsLeaf, IsRoot, IsSpec, Name, Notes, RouteStyle, SeqNo, PtStartX, PtStartY, ActionFlags, StateFlags, Stereotype, StyleEx, SubType, Connector_Type, VirtualInheritance, SourceCard, SourceAccess, SourceElement, SourceRole, SourceRoleType, SourceRoleNote, SourceContainment, SourceIsAggregate, SourceIsOrdered, SourceQualifier, SourceChangeable, SourceConstraint, SourceIsNavigable, SourceStereotype, SourceStyle, SourceTS, DestCard, DestAccess, DestElement, DestRole, DestRoleType, DestRoleNote, DestContainment, DestIsAggregate, DestIsOrdered, DestQualifier, DestChangeable, DestConstraint, DestIsNavigable, DestStereotype, DestStyle, DestTS, Top_Start_Label, Top_Mid_Label, Top_End_Label, Btm_Start_Label, Btm_Mid_Label, Btm_End_Label, Start_Edge, End_Edge, HeadStyle, LineStyle, DispatchAction, PDATA1, PDATA2, PDATA3, PDATA4, PDATA5, 
 	onetomanys:	Start_Object_ID, End_Object_ID, 
+	compositeIds: 
 t_diagram
 	bags:		DiagramID, Diagram_ID, 
 	ids:		Diagram_ID, 
 	properties:	Author, CreatedDate, cx, cy, ea_guid, Name, Notes, Orientation, Scale, Stereotype, StyleEx, Swimlanes, Diagram_Type, Version, 
 	onetomanys:	Package_ID, 
+	compositeIds: 
 t_diagramlinks
 	bags:		
 	ids:		Instance_ID, 
 	properties:	Geometry, Hidden, Path, Style, 
 	onetomanys:	ConnectorID, DiagramID, 
+	compositeIds: 
 t_diagramobjects
 	bags:		
 	ids:		Instance_ID, 
 	properties:	RectBottom, RectLeft, RectRight, Sequence, ObjectStyle, RectTop, 
 	onetomanys:	Diagram_ID, Object_ID, 
+	compositeIds: 
 t_object
 	bags:		Object_ID, ParentID, Object_ID, Start_Object_ID, 
 	ids:		Object_ID, 
 	properties:	Abstract, ActionFlags, Alias, Author, Classifier_guid, Complexity, CreatedDate, ea_guid, EventFlags, GenFile, Genlinks, GenType, IsActive, IsLeaf, IsSpec, ModifiedDate, Multiplicity, Name, Note, Persistence, Phase, RunState, Status, Stereotype, StyleEx, TPos, Object_Type, Version, Visibility, Style, Backcolor, BorderStyle, BorderWidth, Fontcolor, Bordercolor, Cardinality, Concurrency, PDATA1, 
 	onetomanys:	Classifier, Package_ID, ParentID, 
+	compositeIds: 
 t_operation
 	bags:		OperationID, 
 	ids:		OperationID, 
 	properties:	Abstract, Behaviour, Classifier, Code, Const, IsLeaf, Pure, IsQuery, IsRoot, IsStatic, Synchronized, ea_guid, Name, Notes, Pos, ReturnArray, Type, StateFlags, Stereotype, Style, StyleEx, Throws, Scope, Concurrency, GenOption, 
 	onetomanys:	Object_ID, 
+	compositeIds: 
 t_operationparams
 	bags:		
 	ids:		Name, 
 	properties:	ea_guid, OperationID, Type, 
 	onetomanys:	
+	compositeIds: 
 t_package
 	bags:		Parent_ID, Package_ID, Package_ID, 
 	ids:		Package_ID, 
 	properties:	ea_guid, BatchLoad, BatchSave, CodePath, CreatedDate, PackageFlags, IsControlled, Namespace, Protected, LastLoadDate, LastSaveDate, LogXML, ModifiedDate, Name, Notes, PkgOwner, TPos, UMLVersion, UseDTD, Version, XMLPath, 
 	onetomanys:	Parent_ID, 
+	compositeIds: 

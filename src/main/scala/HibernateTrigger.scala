@@ -35,8 +35,8 @@ object HibernateTrigger {
     opt[File]('d', "debug").valueName("<file>").action((x, c) =>
       c.copy(debug = x)).text("Prints all parsed Tables and Columns into an debug file")
 
-    opt[Seq[HibernateTypes]]('e', "exclude").hidden().valueName("<type>,<type>,...").action((x, c) =>
-      c.copy(exclude = x)).text("Does not print specific hibernate-types (ID, Property, ManyToOne, Bag)")
+    opt[Seq[HibernateTypes]]('e', "exclude").valueName("<type>,<type>,...").action((x, c) =>
+      c.copy(exclude = x)).text("Does not print specific hibernate-types (ID, Property, ManyToOne, Bag, CompositeID). Default: Bag")
 
     opt[Unit]('r', "reset").action((_, c) =>
       c.copy(reset = true)).text("Creates statements to drop all tables and triggers")
@@ -60,7 +60,7 @@ object HibernateTrigger {
         val tables = parser.parseXML
 
         if (config.debug != null)
-          saveDebugOutput(tables, config.debug)
+          saveDebugOutput(tables, config)
 
         // Create Trigger Objects & Statements
         println("Step 2 of 3: Creating Triggers")
@@ -93,7 +93,7 @@ object HibernateTrigger {
     }
   }
 
-  private def saveDebugOutput(tables: List[parser.Table], debugFile: File): Unit = {
+  private def saveDebugOutput(tables: List[parser.Table], config: Config): Unit = {
 
     println("Generating Debug Output...")
 
@@ -115,16 +115,19 @@ object HibernateTrigger {
       outputString += "\n\tonetomanys:\t"
       for (otm <- table.manyToOnes) outputString += otm + ", "
 
+      outputString += "\n\tcompositeIds: "
+      for (cid <- table.compositeIds) outputString += cid + ", "
+
     }
 
     println("Generated Debug File. Saving now...")
 
     try {
-      new PrintWriter(debugFile) {
+      new PrintWriter(config.debug) {
         write(outputString)
         close()
       }
-      println("Saved debug file to " + debugFile.getAbsolutePath)
+      println("Saved debug file to " + config.debug.getAbsolutePath)
     } catch {
       case e: Exception => println("ERROR while saving debug file!")
     }
@@ -135,7 +138,7 @@ object HibernateTrigger {
                     clear: Boolean = false,
                     verbose: Boolean = false,
                     debug: File = null,
-                    exclude: Seq[HibernateTypes] = Seq(),
+                    exclude: Seq[HibernateTypes] = Seq(HibernateTypes.bag),
                     reset: Boolean = false,
                     inputFile: File = null,
                     outputFile: File = null

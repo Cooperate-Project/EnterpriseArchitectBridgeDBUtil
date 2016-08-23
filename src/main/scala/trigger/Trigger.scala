@@ -11,8 +11,10 @@ class Trigger(val table: Table, val prefix: String) {
   }
 
   def getCreateTriggerStatements: List[CreateTriggerStatement] = {
-    List(TriggerUtil.createCommonUpdateTrigger(table, prefix))
-    // TODO: Insert / Delete
+    List(TriggerUtil.createCommonInsertTrigger(table, prefix),
+      TriggerUtil.createCommonUpdateTrigger(table, prefix),
+      TriggerUtil.createCommonDeleteTrigger(table, prefix)
+    )
   }
 
   def getCreateTableStatement: CreateTableStatement = {

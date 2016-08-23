@@ -27,8 +27,9 @@ class Parser(inputFile: File, verbose: Boolean) {
       val properties = getColumns(xmlClass, HibernateTypes.property)
       val manyToOnes = getColumns(xmlClass, HibernateTypes.manytoone)
       val bags = getColumns(xmlClass, HibernateTypes.bag)
+      val compositeIds = getColumns(xmlClass, HibernateTypes.compositeid)
 
-      returnTables += Table(tableName, ids, properties, manyToOnes, bags)
+      returnTables += Table(tableName, ids, properties, manyToOnes, bags, compositeIds)
     }
 
     returnTables.toList
@@ -42,14 +43,19 @@ class Parser(inputFile: File, verbose: Boolean) {
       case HibernateTypes.property => "property"
       case HibernateTypes.manytoone => "many-to-one"
       case HibernateTypes.bag => "bag"
+      case HibernateTypes.`compositeid` => "composite-id"
     }
 
+    // FIXME: Funktioniert nicht für compositeID
     for (xmlElements <- xmlClass \\ typeString) {
-      val column = ((xmlElements \\ "column") \ "@name").text.replace("`", "")
 
-      if (verbose) println("Found column: " + column + " [" + hibernateType.toString + "]")
+      for (column <- xmlElements \\ "column") {
+        val columnClear = (column \ "@name").text.replace("`", "")
+        if (verbose) println("Found column: " + columnClear + " [" + hibernateType.toString + "]")
+        columns += columnClear
+      }
 
-      columns += column
+
     }
 
     columns.toList
