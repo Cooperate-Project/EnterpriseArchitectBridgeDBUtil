@@ -51,9 +51,6 @@ object HibernateTrigger {
       case None => // argument fail
       case Some(config) =>
 
-        if (config.exclude.nonEmpty)
-          println("WARNING: Exclude is not yet implemented!")
-
         // Create Parser and parse hibernate xml
         println("Step 1 of 3: Parsing Hibernate XML File")
         val parser = new Parser(config.inputFile, config.verbose)
@@ -64,7 +61,7 @@ object HibernateTrigger {
 
         // Create Trigger Objects & Statements
         println("Step 2 of 3: Creating Triggers")
-        val triggers = for (table <- tables) yield new Trigger(table, config.prefix)
+        val triggers = for (table <- tables) yield new Trigger(table, config.prefix, config.exclude)
         var statements = ListBuffer[Statement]()
 
         if (config.clear) {

@@ -1,9 +1,10 @@
 package trigger
 
+import parser.HibernateTypes.HibernateTypes
 import parser.Table
 import statement._
 
-class Trigger(val table: Table, val prefix: String) {
+class Trigger(val table: Table, val prefix: String, val exclude: Seq[HibernateTypes]) {
 
   def getDropStatements: List[DropStatement] = {
     List(new DropStatement(prefix + table.tableName, DropTypes.TABLE),
@@ -12,7 +13,7 @@ class Trigger(val table: Table, val prefix: String) {
 
   def getCreateTriggerStatements: List[CreateTriggerStatement] = {
     List(TriggerUtil.createCommonInsertTrigger(table, prefix),
-      TriggerUtil.createCommonUpdateTrigger(table, prefix),
+      TriggerUtil.createCommonUpdateTrigger(table, prefix, exclude),
       TriggerUtil.createCommonDeleteTrigger(table, prefix)
     )
   }

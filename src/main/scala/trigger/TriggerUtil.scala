@@ -1,11 +1,12 @@
 package trigger
 
-import parser.Table
+import parser.HibernateTypes.HibernateTypes
+import parser.{HibernateTypes, Table}
 import statement.{CreateTableStatement, CreateTriggerStatement, TriggerTypes}
 
 object TriggerUtil {
 
-  // TODO: Offen: Trigger verifizieren, Doku, Tests, exclude
+  // TODO: Offen: Doku, Tests
   // TODO: Offen: Performance-Test, Konstruierter Listen_Fall (Elements, size, richtig geladen?) (eclipse),
 
   private[trigger] def createCommonTable(tableName: String): CreateTableStatement = {
@@ -16,12 +17,17 @@ object TriggerUtil {
       "ID")
   }
 
-  private[trigger] def createCommonUpdateTrigger(table: Table, prefix: String): CreateTriggerStatement = {
+  private[trigger] def createCommonUpdateTrigger(table: Table, prefix: String, exclude: Seq[HibernateTypes]): CreateTriggerStatement = {
 
     val primaryKey = getPrimaryKey(table)
 
     var code = "IF "
-    val iterator = (table.manyToOnes ::: table.properties ::: table.ids ::: table.bags ::: table.compositeIds).iterator
+    val iterator =
+      ((if (exclude.contains(HibernateTypes.manytoone)) Nil else table.manyToOnes) :::
+        (if (exclude.contains(HibernateTypes.property)) Nil else table.properties) :::
+        (if (exclude.contains(HibernateTypes.id)) Nil else table.ids) :::
+        (if (exclude.contains(HibernateTypes.bag)) Nil else table.bags) :::
+        (if (exclude.contains(HibernateTypes.compositeid)) Nil else table.compositeIds)).iterator
 
     while (iterator.hasNext) {
       val elem = iterator.next()
@@ -44,7 +50,7 @@ object TriggerUtil {
   private[this] def createInsertOrDeleteTrigger(table: Table, prefix: String, isInsertTrigger: Boolean): CreateTriggerStatement = {
 
     val primaryKey = getPrimaryKey(table)
-    val varName = if (isInsertTrigger) "NEW" else "OLD" // TODO: Verifizieren (NEW oder Inserted?, evtl. auch before delete?)
+    val varName = if (isInsertTrigger) "NEW" else "OLD"
     val triggerPrefix = if (isInsertTrigger) "Insert" else "Delete"
     val triggerType = if (isInsertTrigger) TriggerTypes.INSERT else TriggerTypes.DELETE
 

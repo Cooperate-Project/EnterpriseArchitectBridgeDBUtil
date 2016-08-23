@@ -46,7 +46,6 @@ class Parser(inputFile: File, verbose: Boolean) {
       case HibernateTypes.`compositeid` => "composite-id"
     }
 
-    // FIXME: Funktioniert nicht für compositeID
     for (xmlElements <- xmlClass \\ typeString) {
 
       for (column <- xmlElements \\ "column") {
