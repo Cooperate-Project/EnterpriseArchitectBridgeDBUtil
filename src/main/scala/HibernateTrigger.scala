@@ -9,8 +9,11 @@ import scala.collection.mutable.ListBuffer
 
 object HibernateTrigger {
 
+  // Used to parse HibernateTypes in the command line input
   implicit val excludeRead: scopt.Read[HibernateTypes.Value] =
-    scopt.Read.reads(HibernateTypes withName _.toLowerCase)
+  scopt.Read.reads(HibernateTypes withName _.toLowerCase)
+
+  // This is the command line parser (scopt library)
   val argsParser = new scopt.OptionParser[Config]("HibernateTrigger") {
     head("Hibernate XML to SQL Trigger Generator")
 
@@ -64,16 +67,19 @@ object HibernateTrigger {
         val triggers = for (table <- tables) yield new Trigger(table, config.prefix, config.exclude)
         var statements = ListBuffer[Statement]()
 
+        // Create Delete Statements if specified
         if (config.clear) {
           if (config.verbose) println("Generating Clear Statements")
           for (trigger <- triggers)
             statements += trigger.getClearStatement
 
         } else {
+          // Create Drop Statements
           if (config.verbose) println("Generating Drop Statements")
           for (trigger <- triggers) {
             statements ++= trigger.getDropStatements
           }
+          // Create Create Statements
           if (!config.reset) {
             if (config.verbose) println("Generating Create Statements")
             for (trigger <- triggers) {
@@ -90,6 +96,12 @@ object HibernateTrigger {
     }
   }
 
+  /**
+    * Saves the debug output. This is information about parsed tables and columns.
+    *
+    * @param tables the tables to print information
+    * @param config the config with all command line arguments / options
+    */
   private def saveDebugOutput(tables: List[parser.Table], config: Config): Unit = {
 
     println("Generating Debug Output...")
@@ -131,6 +143,18 @@ object HibernateTrigger {
 
   }
 
+  /**
+    * This config specifies all command line options
+    *
+    * @param prefix     the prefix of the logging table
+    * @param clear      true, if delete statements should be created
+    * @param verbose    true, if there should be a verbose console output
+    * @param debug      a file for debug output or nothing
+    * @param exclude    HibernateTypes to exclude from updateTrigger-listening
+    * @param reset      true, if only drop Statements should be created
+    * @param inputFile  the input hiberante xml file
+    * @param outputFile the output sql file
+    */
   case class Config(prefix: String = "ht_",
                     clear: Boolean = false,
                     verbose: Boolean = false,
