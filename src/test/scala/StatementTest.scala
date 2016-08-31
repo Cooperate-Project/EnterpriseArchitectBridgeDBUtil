@@ -5,7 +5,7 @@ class StatementTest extends FunSuite {
 
   test("CreateTableStatement prints correctly.") {
 
-    val statement = new CreateTableStatement("tableName", Map("col1" -> "varchar(40)", "col2" -> "int"), "col2")
+    val statement = new CreateTableStatement("tableName", Map("col1" -> "VARCHAR(40)", "col2" -> "INT"), "col2")
 
     val out = "CREATE TABLE `tableName`\n(\n`col1` VARCHAR(40),\n`col2` INT,\nPRIMARY KEY (`col2`)\n);"
 
