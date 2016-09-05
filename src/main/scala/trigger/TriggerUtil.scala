@@ -21,7 +21,7 @@ object TriggerUtil {
     // FIXME: Potenzielle Fehlerquelle: Primary Key (ID) wird immer als INT angenommen
     new CreateTableStatement(tableName,
       Map("ID" -> "INT",
-        "Timestamp" -> "TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
+        "Timestamp" -> "TIMESTAMP(6) NULL DEFAULT NULL"),
       "ID")
   }
 
@@ -55,7 +55,7 @@ object TriggerUtil {
 
     }
 
-    code += "REPLACE INTO " + prefix + table.tableName + " VALUES(OLD." + primaryKey + ", NOW());\nEND IF;"
+    code += "REPLACE INTO " + prefix + table.tableName + " VALUES(OLD." + primaryKey + ", NOW(6));\nEND IF;"
 
     new CreateTriggerStatement(prefix + table.tableName + "UpdateTrigger", TriggerTypes.UPDATE, table.tableName, true, code)
   }
@@ -86,7 +86,7 @@ object TriggerUtil {
     val triggerPrefix = if (isInsertTrigger) "Insert" else "Delete"
     val triggerType = if (isInsertTrigger) TriggerTypes.INSERT else TriggerTypes.DELETE
 
-    val code = "REPLACE INTO " + prefix + table.tableName + " VALUES(" + varName + "." + primaryKey + ", NOW());"
+    val code = "REPLACE INTO " + prefix + table.tableName + " VALUES(" + varName + "." + primaryKey + ", NOW(6));"
 
     new CreateTriggerStatement(prefix + table.tableName + triggerPrefix + "Trigger", triggerType, table.tableName, true, code)
   }
