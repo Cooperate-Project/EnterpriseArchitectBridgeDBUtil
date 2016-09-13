@@ -61,6 +61,20 @@ object TriggerUtil {
   }
 
   /**
+    * This private functions tries to get the primary key from a table (this might fail!)
+    *
+    * @param table the table to look up a primary key
+    * @return the attribute with the highest percentage to be the primary key
+    */
+  private[this] def getPrimaryKey(table: Table): String = {
+    // FIXME: Potenzielle Fehlerquelle: Kann der Primary Key auch anders gespeichert werden?
+    // FIXME: Composite ID (nur der erste Primary Key wird verwendet. Variables Tabellenlayout notwendig?)
+    if (table.ids.nonEmpty) table.ids.head
+    else if (table.compositeIds.nonEmpty) table.compositeIds.head
+    else throw new Exception("Primary Key nicht gefunden! (Tabelle: " + table.tableName + ")")
+  }
+
+  /**
     * Creates a createTrigger-Statement for empty logging table triggers.
     *
     * @param table            the table for which the logging table was created for
@@ -71,7 +85,7 @@ object TriggerUtil {
   private[trigger] def createEmptyTriggerTableTrigger(table: Table, prefix: String, timeoutInSeconds: Int): CreateTriggerStatement = {
 
     val code = new DeleteStatement(prefix + table.tableName,
-      "`Timestamp` > DATE_SUB(NOW(6), INTERVAL " + timeoutInSeconds + " SECOND)").toString
+      "`Timestamp` < DATE_SUB(NOW(6), INTERVAL " + timeoutInSeconds + " SECOND)").toString
 
     new CreateTriggerStatement(prefix + table.tableName + "EmptyTrigger", TriggerTypes.INSERT, prefix + table.tableName, true, code)
   }
@@ -115,20 +129,6 @@ object TriggerUtil {
     val code = "REPLACE INTO " + prefix + table.tableName + " VALUES(" + varName + "." + primaryKey + ", NOW(6));"
 
     new CreateTriggerStatement(prefix + table.tableName + triggerPrefix + "Trigger", triggerType, table.tableName, true, code)
-  }
-
-  /**
-    * This private functions tries to get the primary key from a table (this might fail!)
-    *
-    * @param table the table to look up a primary key
-    * @return the attribute with the highest percentage to be the primary key
-    */
-  private[this] def getPrimaryKey(table: Table): String = {
-    // FIXME: Potenzielle Fehlerquelle: Kann der Primary Key auch anders gespeichert werden?
-    // FIXME: Composite ID (nur der erste Primary Key wird verwendet. Variables Tabellenlayout notwendig?)
-    if (table.ids.nonEmpty) table.ids.head
-    else if (table.compositeIds.nonEmpty) table.compositeIds.head
-    else throw new Exception("Primary Key nicht gefunden! (Tabelle: " + table.tableName + ")")
   }
 
 }
