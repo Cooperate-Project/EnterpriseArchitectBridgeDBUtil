@@ -40,6 +40,7 @@ object HibernateTrigger {
 
     opt[Int]('t', "timeout").valueName("<seconds>").action((x, c) =>
       c.copy(timeout = x)).text("Timeout until new logging entries get removed. Set to 0 or -1 to disable removal.")
+      .validate(x => if (x > 0) failure("timeout currently not supported!") else success)
 
     opt[Seq[HibernateTypes]]('e', "exclude").valueName("<type>,<type>,...").action((x, c) =>
       c.copy(exclude = x)).text("Does not print specific hibernate-types (ID, Property, ManyToOne, Bag, CompositeID). Default: Bag")
@@ -171,7 +172,7 @@ object HibernateTrigger {
                     reset: Boolean = false,
                     inputFile: File = null,
                     outputFile: File = null,
-                    timeout: Int = 5
+                    timeout: Int = 0
                    )
 
 }
