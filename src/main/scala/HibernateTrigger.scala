@@ -38,6 +38,9 @@ object HibernateTrigger {
     opt[File]('d', "debug").valueName("<file>").action((x, c) =>
       c.copy(debug = x)).text("Prints all parsed Tables and Columns into an debug file")
 
+    opt[Int]('t', "timeout").valueName("<seconds>").action((x, c) =>
+      c.copy(timeout = x)).text("Timeout until new logging entries get removed. Set to 0 or -1 to disable removal.")
+
     opt[Seq[HibernateTypes]]('e', "exclude").valueName("<type>,<type>,...").action((x, c) =>
       c.copy(exclude = x)).text("Does not print specific hibernate-types (ID, Property, ManyToOne, Bag, CompositeID). Default: Bag")
 
@@ -64,7 +67,7 @@ object HibernateTrigger {
 
         // Create Trigger Objects & Statements
         println("Step 2 of 3: Creating Triggers")
-        val triggers = for (table <- tables) yield new Trigger(table, config.prefix, config.exclude)
+        val triggers = for (table <- tables) yield new Trigger(table, config.prefix, config.exclude, config.timeout)
         var statements = ListBuffer[Statement]()
 
         // Create Delete Statements if specified
@@ -85,6 +88,10 @@ object HibernateTrigger {
             for (trigger <- triggers) {
               statements += trigger.getCreateTableStatement
               statements ++= trigger.getCreateTriggerStatements
+
+              if (config.timeout > 0) {
+                statements += trigger.getEmptyTriggerTableStatement
+              }
             }
           }
         }
@@ -154,6 +161,7 @@ object HibernateTrigger {
     * @param reset      true, if only drop Statements should be created
     * @param inputFile  the input hiberante xml file
     * @param outputFile the output sql file
+    * @param timeout    the timeout until new logging entries will get removed
     */
   case class Config(prefix: String = "ht_",
                     clear: Boolean = false,
@@ -162,7 +170,8 @@ object HibernateTrigger {
                     exclude: Seq[HibernateTypes] = Seq(HibernateTypes.bag),
                     reset: Boolean = false,
                     inputFile: File = null,
-                    outputFile: File = null
+                    outputFile: File = null,
+                    timeout: Int = 5
                    )
 
 }

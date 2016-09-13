@@ -2,7 +2,7 @@ package trigger
 
 import parser.HibernateTypes.HibernateTypes
 import parser.{HibernateTypes, Table}
-import statement.{CreateTableStatement, CreateTriggerStatement, TriggerTypes}
+import statement.{CreateTableStatement, CreateTriggerStatement, DeleteStatement, TriggerTypes}
 
 /**
   * Provides Utility Function to create common SQL statements for trigger & other.
@@ -61,6 +61,22 @@ object TriggerUtil {
   }
 
   /**
+    * Creates a createTrigger-Statement for empty logging table triggers.
+    *
+    * @param table            the table for which the logging table was created for
+    * @param prefix           the prefix of the logging table
+    * @param timeoutInSeconds the timeout after which old values will be removed
+    * @return
+    */
+  private[trigger] def createEmptyTriggerTableTrigger(table: Table, prefix: String, timeoutInSeconds: Int): CreateTriggerStatement = {
+
+    val code = new DeleteStatement(prefix + table.tableName,
+      "`Timestamp` > DATE_SUB(NOW(6), INTERVAL " + timeoutInSeconds + " SECOND)").toString
+
+    new CreateTriggerStatement(prefix + table.tableName + "EmptyTrigger", TriggerTypes.INSERT, prefix + table.tableName, true, code)
+  }
+
+  /**
     * Creates a createTrigger-Statement for insert triggers.
     *
     * @param table  the table to listen to
@@ -69,6 +85,16 @@ object TriggerUtil {
     */
   private[trigger] def createCommonInsertTrigger(table: Table, prefix: String): CreateTriggerStatement =
   createInsertOrDeleteTrigger(table, prefix, isInsertTrigger = true)
+
+  /**
+    * Creates a createTrigger-Statement for delete triggers.
+    *
+    * @param table  the table to listen to
+    * @param prefix the prefix of the logging table
+    * @return a CreateTrigger-Statement
+    */
+  private[trigger] def createCommonDeleteTrigger(table: Table, prefix: String): CreateTriggerStatement =
+  createInsertOrDeleteTrigger(table, prefix, isInsertTrigger = false)
 
   /**
     * This private function is used to create Insert or Delete triggers (nearly everything is common)
@@ -104,15 +130,5 @@ object TriggerUtil {
     else if (table.compositeIds.nonEmpty) table.compositeIds.head
     else throw new Exception("Primary Key nicht gefunden! (Tabelle: " + table.tableName + ")")
   }
-
-  /**
-    * Creates a createTrigger-Statement for delete triggers.
-    *
-    * @param table  the table to listen to
-    * @param prefix the prefix of the logging table
-    * @return a CreateTrigger-Statement
-    */
-  private[trigger] def createCommonDeleteTrigger(table: Table, prefix: String): CreateTriggerStatement =
-  createInsertOrDeleteTrigger(table, prefix, isInsertTrigger = false)
 
 }

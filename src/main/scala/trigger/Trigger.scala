@@ -11,7 +11,7 @@ import statement._
   * @param prefix  the prefix of the logging table
   * @param exclude specifies, which HibernateTypes / Attributes of a table should be ignored
   */
-class Trigger(val table: Table, val prefix: String, val exclude: Seq[HibernateTypes]) {
+class Trigger(val table: Table, val prefix: String, val exclude: Seq[HibernateTypes], val timeout: Int) {
 
   /**
     * Creates drop statements for the logging table and insert-, update- and delete-trigger.
@@ -22,7 +22,8 @@ class Trigger(val table: Table, val prefix: String, val exclude: Seq[HibernateTy
     List(new DropStatement(prefix + table.tableName, DropTypes.TABLE),
       new DropStatement(prefix + table.tableName + "InsertTrigger", DropTypes.TRIGGER),
       new DropStatement(prefix + table.tableName + "UpdateTrigger", DropTypes.TRIGGER),
-      new DropStatement(prefix + table.tableName + "DeleteTrigger", DropTypes.TRIGGER))
+      new DropStatement(prefix + table.tableName + "DeleteTrigger", DropTypes.TRIGGER),
+      new DropStatement(prefix + table.tableName + "EmptyTrigger", DropTypes.TRIGGER))
   }
 
   /**
@@ -38,7 +39,7 @@ class Trigger(val table: Table, val prefix: String, val exclude: Seq[HibernateTy
   }
 
   /**
-    * Creates a createTable-statement for the loggin table.
+    * Creates a createTable-statement for the logging table.
     *
     * @return A create statement
     */
@@ -52,4 +53,13 @@ class Trigger(val table: Table, val prefix: String, val exclude: Seq[HibernateTy
     * @return A delete statement
     */
   def getClearStatement: DeleteStatement = new DeleteStatement(prefix + table.tableName)
+
+  /**
+    * Creates a statement to create a insert trigger which removes old values from the trigger logging table.
+    *
+    * @return A list of create statements
+    */
+  def getEmptyTriggerTableStatement: CreateTriggerStatement = {
+    TriggerUtil.createEmptyTriggerTableTrigger(table, prefix, timeout)
+  }
 }
