@@ -24,5 +24,5 @@ class DropStatement(val name: String, val dropType: DropTypes) extends Statement
   */
 object DropTypes extends Enumeration {
   type DropTypes = Value
-  val TABLE, TRIGGER = Value
+  val TABLE, TRIGGER, EVENT = Value
 }

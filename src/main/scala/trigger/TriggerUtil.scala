@@ -2,14 +2,12 @@ package trigger
 
 import parser.HibernateTypes.HibernateTypes
 import parser.{HibernateTypes, Table}
-import statement.{CreateTableStatement, CreateTriggerStatement, DeleteStatement, TriggerTypes}
+import statement._
 
 /**
   * Provides Utility Function to create common SQL statements for trigger & other.
   */
 object TriggerUtil {
-
-  // TODO: Offen: Refresh-Cascade googlen
 
   /**
     * Creates a common createTable-Statements with two columns (entity-ID and modified date).
@@ -58,20 +56,6 @@ object TriggerUtil {
     code += "REPLACE INTO " + prefix + table.tableName + " VALUES(OLD." + primaryKey + ", NOW(6));\nEND IF;"
 
     new CreateTriggerStatement(prefix + table.tableName + "UpdateTrigger", TriggerTypes.UPDATE, table.tableName, true, code)
-  }
-
-  /**
-    * This private functions tries to get the primary key from a table (this might fail!)
-    *
-    * @param table the table to look up a primary key
-    * @return the attribute with the highest percentage to be the primary key
-    */
-  private[this] def getPrimaryKey(table: Table): String = {
-    // FIXME: Potenzielle Fehlerquelle: Kann der Primary Key auch anders gespeichert werden?
-    // FIXME: Composite ID (nur der erste Primary Key wird verwendet. Variables Tabellenlayout notwendig?)
-    if (table.ids.nonEmpty) table.ids.head
-    else if (table.compositeIds.nonEmpty) table.compositeIds.head
-    else throw new Exception("Primary Key nicht gefunden! (Tabelle: " + table.tableName + ")")
   }
 
   /**
@@ -129,6 +113,26 @@ object TriggerUtil {
     val code = "REPLACE INTO " + prefix + table.tableName + " VALUES(" + varName + "." + primaryKey + ", NOW(6));"
 
     new CreateTriggerStatement(prefix + table.tableName + triggerPrefix + "Trigger", triggerType, table.tableName, true, code)
+  }
+
+  /**
+    * This private functions tries to get the primary key from a table (this might fail!)
+    *
+    * @param table the table to look up a primary key
+    * @return the attribute with the highest percentage to be the primary key
+    */
+  private[this] def getPrimaryKey(table: Table): String = {
+    // FIXME: Potenzielle Fehlerquelle: Kann der Primary Key auch anders gespeichert werden?
+    // FIXME: Composite ID (nur der erste Primary Key wird verwendet. Variables Tabellenlayout notwendig?)
+    if (table.ids.nonEmpty) table.ids.head
+    else if (table.compositeIds.nonEmpty) table.compositeIds.head
+    else throw new Exception("Primary Key nicht gefunden! (Tabelle: " + table.tableName + ")")
+  }
+
+  private[trigger] def createCommonCleanEvent(table: Table, prefix: String, intervalInMinutes: Int) = {
+    val code = "DELETE FROM `" + prefix + table.tableName +
+      "` WHERE `Timestamp` < DATE_SUB(NOW(6), INTERVAL " + intervalInMinutes + " MINUTE)"
+    new CreateSimpleEventStatement(prefix + table.tableName + "CleanEvent", intervalInMinutes, code)
   }
 
 }

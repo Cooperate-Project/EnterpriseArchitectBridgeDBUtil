@@ -18,7 +18,7 @@ Usage: HibernateTrigger [options] <input xml> <output sql>
   -c, --clear              Creates statements to empty all trigger tables
   -v, --verbose            Enables detailed console output
   -d, --debug <file>       Prints all parsed Tables and Columns into an debug file
-  -t, --timeout <seconds>  Timeout until new logging entries get removed. Set to 0 or -1 to disable removal.
+  -e, --event <minutes>    Event interval when old logging entries get removed. Set to 0 or -1 to disable removal.
   -e, --exclude <type>,<type>,...
                            Does not print specific hibernate-types (ID, Property, ManyToOne, Bag, CompositeID). Default: Bag
   -r, --reset              Creates statements to drop all tables and triggers

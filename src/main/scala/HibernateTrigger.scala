@@ -38,9 +38,8 @@ object HibernateTrigger {
     opt[File]('d', "debug").valueName("<file>").action((x, c) =>
       c.copy(debug = x)).text("Prints all parsed Tables and Columns into an debug file")
 
-    opt[Int]('t', "timeout").valueName("<seconds>").action((x, c) =>
-      c.copy(timeout = x)).text("Timeout until new logging entries get removed. Set to 0 or -1 to disable removal.")
-      .validate(x => if (x > 0) failure("timeout currently not supported!") else success)
+    opt[Int]('e', "event").valueName("<minutes>").action((x, c) =>
+      c.copy(eventInterval = x)).text("Event interval when old logging entries get removed. Set to 0 or -1 to disable removal.")
 
     opt[Seq[HibernateTypes]]('e', "exclude").valueName("<type>,<type>,...").action((x, c) =>
       c.copy(exclude = x)).text("Does not print specific hibernate-types (ID, Property, ManyToOne, Bag, CompositeID). Default: Bag")
@@ -68,7 +67,7 @@ object HibernateTrigger {
 
         // Create Trigger Objects & Statements
         println("Step 2 of 3: Creating Triggers")
-        val triggers = for (table <- tables) yield new Trigger(table, config.prefix, config.exclude, config.timeout)
+        val triggers = for (table <- tables) yield new Trigger(table, config.prefix, config.exclude, config.eventInterval)
         var statements = ListBuffer[Statement]()
 
         // Create Delete Statements if specified
@@ -90,8 +89,8 @@ object HibernateTrigger {
               statements += trigger.getCreateTableStatement
               statements ++= trigger.getCreateTriggerStatements
 
-              if (config.timeout > 0) {
-                statements += trigger.getEmptyTriggerTableStatement
+              if (config.eventInterval > 0) {
+                statements += trigger.getCleanEventStatement
               }
             }
           }
@@ -154,15 +153,15 @@ object HibernateTrigger {
   /**
     * This config specifies all command line options
     *
-    * @param prefix     the prefix of the logging table
-    * @param clear      true, if delete statements should be created
-    * @param verbose    true, if there should be a verbose console output
-    * @param debug      a file for debug output or nothing
-    * @param exclude    HibernateTypes to exclude from updateTrigger-listening
-    * @param reset      true, if only drop Statements should be created
-    * @param inputFile  the input hiberante xml file
-    * @param outputFile the output sql file
-    * @param timeout    the timeout until new logging entries will get removed
+    * @param prefix        the prefix of the logging table
+    * @param clear         true, if delete statements should be created
+    * @param verbose       true, if there should be a verbose console output
+    * @param debug         a file for debug output or nothing
+    * @param exclude       HibernateTypes to exclude from updateTrigger-listening
+    * @param reset         true, if only drop Statements should be created
+    * @param inputFile     the input hibernate xml file
+    * @param outputFile    the output sql file
+    * @param eventInterval the interval when old logging entries will get removed
     */
   case class Config(prefix: String = "ht_",
                     clear: Boolean = false,
@@ -172,7 +171,7 @@ object HibernateTrigger {
                     reset: Boolean = false,
                     inputFile: File = null,
                     outputFile: File = null,
-                    timeout: Int = 0
+                    eventInterval: Int = 1
                    )
 
 }

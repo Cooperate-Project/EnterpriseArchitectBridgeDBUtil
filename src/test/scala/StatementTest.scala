@@ -49,6 +49,18 @@ class StatementTest extends FunSuite {
 
   }
 
+  test("EventStatement prints correctly.") {
+
+    val statement = new CreateSimpleEventStatement("myEvent", 3, "CODE")
+
+    val out = "CREATE EVENT `myEvent`\nON SCHEDULE EVERY 3 MINUTE\nON COMPLETION PRESERVE\nENABLE\nDO\nCODE;"
+
+    assertResult(out) {
+      statement.toString
+    }
+
+  }
+
   test("DropStatement prints correctly.") {
 
     val statement = new DropStatement("tableName", DropTypes.TABLE)
