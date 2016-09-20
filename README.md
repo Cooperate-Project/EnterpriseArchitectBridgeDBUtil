@@ -23,3 +23,7 @@ Usage: HibernateTrigger [options] <input xml> <output sql>
                            Does not print specific hibernate-types (ID, Property, ManyToOne, Bag, CompositeID). Default: Bag
   -r, --reset              Creates statements to drop all tables and triggers
 ```
+
+##Event Scheduler
+
+By default, the generator creates events to remove old logging values on a regular basis. To work properly, the [event scheduler](https://dev.mysql.com/doc/refman/5.7/en/event-scheduler.html) must be enabled on the server. You can change the interval or disable event creation with the `event` flag.
