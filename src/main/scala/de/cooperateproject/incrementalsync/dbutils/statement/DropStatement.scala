@@ -1,5 +1,7 @@
 package de.cooperateproject.incrementalsync.dbutils.statement
 
+import java.text.MessageFormat
+
 import de.cooperateproject.incrementalsync.dbutils.statement.DropTypes.DropTypes
 
 /**
@@ -10,12 +12,14 @@ import de.cooperateproject.incrementalsync.dbutils.statement.DropTypes.DropTypes
   */
 class DropStatement(val name: String, val dropType: DropTypes) extends Statement {
 
+  private val DROP_FORMAT = new MessageFormat("DROP {0} IF EXISTS `{1}`;")
+
   /**
     * Creates the textual representation of the sql de.cooperateproject.incrementalsync.dbutils.statement for MySQL Database Systems.
     *
     * @return A String, ready to be executed.
     */
-  override def toString: String = "DROP " + dropType.toString + " IF EXISTS `" + name + "`;"
+  override def toString: String = DROP_FORMAT.format(Array(dropType.toString, name))
 
 }
 

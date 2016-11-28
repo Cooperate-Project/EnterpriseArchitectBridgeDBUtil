@@ -1,5 +1,7 @@
 package de.cooperateproject.incrementalsync.dbutils.statement
 
+import java.text.MessageFormat
+
 /**
   * A SQL Statement to create a table.
   *
@@ -10,6 +12,15 @@ package de.cooperateproject.incrementalsync.dbutils.statement
 class CreateTableStatement(val tableName: String,
                            val content: Map[String, String],
                            val primaryKey: String) extends Statement {
+
+  private val CREATE_TABLE_FORMAT = new MessageFormat(
+    """CREATE TABLE `{0}`
+      |(
+      |{1}
+      |{2}
+      |);""".stripMargin)
+
+  private val TABLE_ROW_FORMAT = new MessageFormat("`{0}` {1},")
 
   /**
     * A SQL Statement to create a table.
@@ -25,16 +36,16 @@ class CreateTableStatement(val tableName: String,
     * @return A String, ready to be executed.
     */
   override def toString: String = {
-    var returnString = "CREATE TABLE `" + tableName + "`\n(\n"
 
-    for ((columnName, columnType) <- content) {
-      returnString += "`" + columnName + "` " + columnType + ",\n"
-    }
+    val rows = for ((columnName, columnType) <- content)
+      yield TABLE_ROW_FORMAT.format(Array(columnName, columnType))
 
-    if (primaryKey != null && primaryKey.length > 0 && content.contains(primaryKey))
-      returnString += "PRIMARY KEY (`" + primaryKey + "`)"
+    val key: String =
+      if (primaryKey != null && primaryKey.length > 0 && content.contains(primaryKey))
+        "PRIMARY KEY (`%s`)".format(primaryKey) else ""
 
-    returnString + "\n);"
+    CREATE_TABLE_FORMAT.format(Array(tableName, rows.mkString("\n"), key))
+
   }
 
 

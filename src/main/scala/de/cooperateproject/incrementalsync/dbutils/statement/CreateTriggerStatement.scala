@@ -1,5 +1,7 @@
 package de.cooperateproject.incrementalsync.dbutils.statement
 
+import java.text.MessageFormat
+
 import de.cooperateproject.incrementalsync.dbutils.statement.TriggerTypes.TriggerTypes
 
 /**
@@ -17,20 +19,33 @@ class CreateTriggerStatement(val triggerName: String,
                              val forEachRow: Boolean,
                              val code: String) extends Statement {
 
+  val CREATE_TRIGGER_FORMAT = new MessageFormat(
+    """DELIMITER $
+      |CREATE TRIGGER `{0}` AFTER {1} ON `{2}`
+      |{3}
+      |BEGIN
+      |{4}
+      |END $
+      |DELIMITER ;""".stripMargin)
+
   /**
     * Creates the textual representation of the sql de.cooperateproject.incrementalsync.dbutils.statement for MySQL Database Systems.
     *
     * @return A String, ready to be executed.
     */
   override def toString: String = {
-    var returnString = "DELIMITER $\nCREATE TRIGGER `" + triggerName + "` AFTER " +
-      triggerType.toString + " ON `" + tableName + "`\n"
 
-    if (forEachRow) returnString += "FOR EACH ROW\n"
+    CREATE_TRIGGER_FORMAT.format(Array(triggerName, triggerType.toString, tableName,
+      if (forEachRow) "FOR EACH ROW" else "", code))
 
-    returnString += "BEGIN\n" + code + "\nEND $\nDELIMITER ;"
+    /* var returnString = "DELIMITER $\nCREATE TRIGGER `" + triggerName + "` AFTER " +
+       triggerType.toString + " ON `" + tableName + "`\n"
 
-    returnString
+     if (forEachRow) returnString += "FOR EACH ROW\n"
+
+     returnString += "BEGIN\n" + code + "\nEND $\nDELIMITER ;"
+
+     returnString*/
   }
 
 }

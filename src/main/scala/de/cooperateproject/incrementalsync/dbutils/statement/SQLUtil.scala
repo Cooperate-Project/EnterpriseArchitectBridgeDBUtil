@@ -31,16 +31,20 @@ object SQLUtil {
       outputString += statement.toString + "\n\n"
     }
 
-    try {
-      new PrintWriter(sqlFile) {
-        write(outputString)
-        close()
-      }
-      println("Saved sql file to " + sqlFile.getAbsolutePath)
-    } catch {
-      case e: Exception => println("ERROR while saving sql file!")
-    }
+    writeWithPrintWriter(sqlFile, outputString, "Saved sql file to ", "ERROR while saving sql file!")
+  }
 
+  def writeWithPrintWriter(file: File, content: String, successMessage: String, exceptionMessage: String): Unit = {
+    var writer: PrintWriter = null
+    try {
+      writer = new PrintWriter(file)
+      writer.write(content)
+      println(successMessage + file.getAbsolutePath)
+    } catch {
+      case _: Exception => println(exceptionMessage)
+    } finally {
+      writer.close()
+    }
   }
 
 }

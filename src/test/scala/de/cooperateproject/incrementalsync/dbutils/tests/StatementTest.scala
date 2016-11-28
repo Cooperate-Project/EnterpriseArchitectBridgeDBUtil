@@ -5,14 +5,22 @@ import org.scalatest.FunSuite
 
 class StatementTest extends FunSuite {
 
+  val LINE_BREAK = "[NEWLINE]"
+
   test("CreateTableStatement prints correctly.") {
 
     val statement = new CreateTableStatement("tableName", Map("col1" -> "VARCHAR(40)", "col2" -> "INT"), "col2")
 
-    val out = "CREATE TABLE `tableName`\n(\n`col1` VARCHAR(40),\n`col2` INT,\nPRIMARY KEY (`col2`)\n);"
+    val out =
+      """CREATE TABLE `tableName`
+        |(
+        |`col1` VARCHAR(40),
+        |`col2` INT,
+        |PRIMARY KEY (`col2`)
+        |);""".stripMargin.replaceAll("[\r\n]+", LINE_BREAK)
 
     assertResult(out) {
-      statement.toString
+      statement.toString.replaceAll("[\r\n]+", LINE_BREAK)
     }
 
   }
@@ -30,11 +38,17 @@ class StatementTest extends FunSuite {
 
     val statement = new CreateTriggerStatement("triggerName", TriggerTypes.INSERT, "watchMe", true, "SELECT *;")
 
-    val out = "DELIMITER $\nCREATE TRIGGER `triggerName` AFTER INSERT ON `watchMe`\nFOR EACH ROW\nBEGIN\nSELECT *;\nEND $\nDELIMITER ;"
-
+    val out =
+      """DELIMITER $
+        |CREATE TRIGGER `triggerName` AFTER INSERT ON `watchMe`
+        |FOR EACH ROW
+        |BEGIN
+        |SELECT *;
+        |END $
+        |DELIMITER ;""".stripMargin.replaceAll("[\r\n]+", LINE_BREAK)
 
     assertResult(out) {
-      statement.toString
+      statement.toString.replaceAll("[\r\n]+", LINE_BREAK)
     }
 
   }
@@ -43,10 +57,12 @@ class StatementTest extends FunSuite {
 
     val statement = new DeleteStatement("tableName", "ID = 1")
 
-    val out = "DELETE FROM `tableName`\nWHERE ID = 1;"
+    val out =
+      """DELETE FROM `tableName`
+        |WHERE ID = 1;""".stripMargin.replaceAll("[\r\n]+", LINE_BREAK)
 
     assertResult(out) {
-      statement.toString
+      statement.toString.replaceAll("[\r\n]+", LINE_BREAK)
     }
 
   }
@@ -55,10 +71,18 @@ class StatementTest extends FunSuite {
 
     val statement = new CreateSimpleEventStatement("myEvent", 3, "CODE")
 
-    val out = "CREATE EVENT `myEvent`\nON SCHEDULE EVERY 3 MINUTE\nON COMPLETION PRESERVE\nENABLE\nDO\nCODE;"
+    println(statement.toString)
+
+    val out =
+      """CREATE EVENT `myEvent`
+        |ON SCHEDULE EVERY 3 MINUTE
+        |ON COMPLETION PRESERVE
+        |ENABLE
+        |DO
+        |CODE;""".stripMargin.replaceAll("[\r\n]+", LINE_BREAK)
 
     assertResult(out) {
-      statement.toString
+      statement.toString.replaceAll("[\r\n]+", LINE_BREAK)
     }
 
   }
@@ -67,10 +91,10 @@ class StatementTest extends FunSuite {
 
     val statement = new DropStatement("tableName", DropTypes.TABLE)
 
-    val out = "DROP TABLE IF EXISTS `tableName`;"
+    val out = "DROP TABLE IF EXISTS `tableName`;".replaceAll("[\r\n]+", LINE_BREAK)
 
     assertResult(out) {
-      statement.toString
+      statement.toString.replaceAll("[\r\n]+", LINE_BREAK)
     }
 
   }

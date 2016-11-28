@@ -1,9 +1,10 @@
 package de.cooperateproject.incrementalsync.dbutils
 
-import java.io.{File, PrintWriter}
+import java.io.File
 
 import de.cooperateproject.incrementalsync.dbutils.parser.HibernateTypes.HibernateTypes
 import de.cooperateproject.incrementalsync.dbutils.parser.{HibernateTypes, Parser}
+import de.cooperateproject.incrementalsync.dbutils.statement.SQLUtil.writeWithPrintWriter
 import de.cooperateproject.incrementalsync.dbutils.statement.{SQLUtil, Statement}
 import de.cooperateproject.incrementalsync.dbutils.trigger.Trigger
 
@@ -118,40 +119,32 @@ object HibernateTrigger {
 
     println("Generating Debug Output...")
 
-    var outputString: String = "Info: The Debug Output ignores the exclude-flag!\n"
+    var outputStringBuilder: StringBuilder = new StringBuilder("Info: The Debug Output ignores the exclude-flag!\n")
 
     for (table <- tables) {
 
-      outputString += "\n" + table.tableName
+      outputStringBuilder append "\n" + table.tableName
 
-      outputString += "\n\tbags:\t\t"
-      for (bag <- table.bags) outputString += bag + ", "
+      outputStringBuilder append "\n\tbags:\t\t"
+      for (bag <- table.bags) outputStringBuilder append bag + ", "
 
-      outputString += "\n\tids:\t\t"
-      for (id <- table.ids) outputString += id + ", "
+      outputStringBuilder append "\n\tids:\t\t"
+      for (id <- table.ids) outputStringBuilder append id + ", "
 
-      outputString += "\n\tproperties:\t"
-      for (prop <- table.properties) outputString += prop + ", "
+      outputStringBuilder append "\n\tproperties:\t"
+      for (prop <- table.properties) outputStringBuilder append prop + ", "
 
-      outputString += "\n\tonetomanys:\t"
-      for (otm <- table.manyToOnes) outputString += otm + ", "
+      outputStringBuilder append "\n\tonetomanys:\t"
+      for (otm <- table.manyToOnes) outputStringBuilder append otm + ", "
 
-      outputString += "\n\tcompositeIds: "
-      for (cid <- table.compositeIds) outputString += cid + ", "
+      outputStringBuilder append "\n\tcompositeIds: "
+      for (cid <- table.compositeIds) outputStringBuilder append cid + ", "
 
     }
 
     println("Generated Debug File. Saving now...")
 
-    try {
-      new PrintWriter(config.debug) {
-        write(outputString)
-        close()
-      }
-      println("Saved debug file to " + config.debug.getAbsolutePath)
-    } catch {
-      case e: Exception => println("ERROR while saving debug file!")
-    }
+    writeWithPrintWriter(config.debug, outputStringBuilder.toString, "Saved debug file to ", "ERROR while saving debug file!")
 
   }
 

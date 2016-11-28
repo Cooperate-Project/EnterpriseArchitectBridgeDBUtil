@@ -1,5 +1,7 @@
 package de.cooperateproject.incrementalsync.dbutils.statement
 
+import java.text.MessageFormat
+
 /**
   * A SQL de.cooperateproject.incrementalsync.dbutils.statement to create very simple regular persistent events.
   *
@@ -11,6 +13,14 @@ class CreateSimpleEventStatement(val eventName: String,
                                  val intervalInMinutes: Int,
                                  val code: String) extends Statement {
 
+  private val CREATE_EVENT_FORMAT = new MessageFormat(
+    """CREATE EVENT `{0}`
+      |ON SCHEDULE EVERY {1} MINUTE
+      |ON COMPLETION PRESERVE
+      |ENABLE
+      |DO
+      |{2};""".stripMargin)
+
   /**
     * Creates the textual representation of the sql de.cooperateproject.incrementalsync.dbutils.statement for MySQL Database Systems.
     *
@@ -18,15 +28,7 @@ class CreateSimpleEventStatement(val eventName: String,
     */
   override def toString: String = {
 
-    var event = "CREATE EVENT `" + eventName + "`\n"
-
-    event += "ON SCHEDULE EVERY " + intervalInMinutes + " MINUTE\n"
-
-    event += "ON COMPLETION PRESERVE\nENABLE\n"
-
-    event += "DO\n" + code + ";"
-
-    event
+    CREATE_EVENT_FORMAT.format(Array(eventName, intervalInMinutes, code))
   }
 
 }
