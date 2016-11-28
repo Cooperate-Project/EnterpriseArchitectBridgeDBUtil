@@ -5,7 +5,7 @@ import de.cooperateproject.incrementalsync.dbutils.parser.{HibernateTypes, Table
 import de.cooperateproject.incrementalsync.dbutils.statement._
 
 /**
-  * Provides Utility Function to create common SQL statements for de.cooperateproject.incrementalsync.dbutils.trigger & other.
+  * Provides Utility Function to create common SQL statements for trigger & other.
   */
 object TriggerUtil {
 
@@ -16,7 +16,7 @@ object TriggerUtil {
     * @return a CreateTabble-Statement
     */
   private[trigger] def createCommonTable(tableName: String): CreateTableStatement = {
-    // FIXME: Potenzielle Fehlerquelle: Primary Key (ID) wird immer als INT angenommen
+    // FIXME: Primary Key always INT?
     new CreateTableStatement(tableName,
       Map("ID" -> "INT",
         "Timestamp" -> "TIMESTAMP(6) NULL DEFAULT NULL"),
@@ -85,21 +85,11 @@ object TriggerUtil {
   createInsertOrDeleteTrigger(table, prefix, isInsertTrigger = true)
 
   /**
-    * Creates a createTrigger-Statement for delete triggers.
-    *
-    * @param table  the table to listen to
-    * @param prefix the prefix of the logging table
-    * @return a CreateTrigger-Statement
-    */
-  private[trigger] def createCommonDeleteTrigger(table: Table, prefix: String): CreateTriggerStatement =
-    createInsertOrDeleteTrigger(table, prefix, isInsertTrigger = false)
-
-  /**
     * This private function is used to create Insert or Delete triggers (nearly everything is common)
     *
     * @param table           the table to listen to
     * @param prefix          the prefix of the logging table
-    * @param isInsertTrigger true, if a createTrigger-de.cooperateproject.incrementalsync.dbutils.statement for Insert Triggers should be created
+    * @param isInsertTrigger true, if a statement for Insert Triggers should be created
     *                        false, if it should be a Delete Trigger
     * @return a CreateTrigger-Statement
     */
@@ -122,12 +112,21 @@ object TriggerUtil {
     * @return the attribute with the highest percentage to be the primary key
     */
   private[this] def getPrimaryKey(table: Table): String = {
-    // FIXME: Potenzielle Fehlerquelle: Kann der Primary Key auch anders gespeichert werden?
-    // FIXME: Composite ID (nur der erste Primary Key wird verwendet. Variables Tabellenlayout notwendig?)
+    // FIXME: Composite ID is currently not supported
     if (table.ids.nonEmpty) table.ids.head
     else if (table.compositeIds.nonEmpty) table.compositeIds.head
     else throw new Exception("Primary Key nicht gefunden! (Tabelle: " + table.tableName + ")")
   }
+
+  /**
+    * Creates a createTrigger-Statement for delete triggers.
+    *
+    * @param table  the table to listen to
+    * @param prefix the prefix of the logging table
+    * @return a CreateTrigger-Statement
+    */
+  private[trigger] def createCommonDeleteTrigger(table: Table, prefix: String): CreateTriggerStatement =
+    createInsertOrDeleteTrigger(table, prefix, isInsertTrigger = false)
 
   private[trigger] def createCommonCleanEvent(table: Table, prefix: String, intervalInMinutes: Int) = {
     val code = "DELETE FROM `" + prefix + table.tableName +

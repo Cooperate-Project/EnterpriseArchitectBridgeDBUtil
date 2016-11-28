@@ -3,7 +3,7 @@ package de.cooperateproject.incrementalsync.dbutils.statement
 import java.text.MessageFormat
 
 /**
-  * A SQL de.cooperateproject.incrementalsync.dbutils.statement to create very simple regular persistent events.
+  * A statement to create very simple regular persistent events.
   *
   * @param eventName         the name of the event
   * @param intervalInMinutes the event interval in minutes
@@ -22,7 +22,7 @@ class CreateSimpleEventStatement(val eventName: String,
       |{2};""".stripMargin)
 
   /**
-    * Creates the textual representation of the sql de.cooperateproject.incrementalsync.dbutils.statement for MySQL Database Systems.
+    * Creates the textual representation of the sql statement for MySQL Database Systems.
     *
     * @return A String, ready to be executed.
     */

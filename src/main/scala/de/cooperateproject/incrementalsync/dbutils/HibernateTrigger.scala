@@ -35,8 +35,8 @@ object HibernateTrigger {
       c.copy(prefix = x)).validate(x => if (x.length < 1) failure("Empty prefix") else success).
       text("Table and trigger name prefix in database")
 
-    opt[Unit]('c', "clear").action((_, c) =>
-      c.copy(clear = true)).text("Creates statements to empty all trigger tables")
+    opt[Unit]('r', "reset").action((_, c) =>
+      c.copy(clear = true)).text("Creates statements to empty all trigger tables (with a proper mapping provided).")
 
     opt[Unit]('v', "verbose").action((_, c) =>
       c.copy(verbose = true)).text("Enables detailed console output")
@@ -45,13 +45,13 @@ object HibernateTrigger {
       c.copy(debug = x)).text("Prints all parsed Tables and Columns into an debug file")
 
     opt[Int]('e', "event").valueName("<minutes>").action((x, c) =>
-      c.copy(eventInterval = x)).text("Event interval when old logging entries get removed. Set to 0 or -1 to disable removal.")
+      c.copy(eventInterval = x)).text("Event interval when old logging entries get removed (Minutes). Set to 0 or -1 to disable removal.")
 
     opt[Seq[HibernateTypes]]('e', "exclude").valueName("<type>,<type>,...").action((x, c) =>
-      c.copy(exclude = x)).text("Does not print specific hibernate-types (ID, Property, ManyToOne, Bag, CompositeID). Default: Bag")
+      c.copy(exclude = x)).text("Does exclude sql commands for specific hibernate-types (ID, Property, ManyToOne, Bag, CompositeID). Default: Bag")
 
-    opt[Unit]('r', "reset").action((_, c) =>
-      c.copy(reset = true)).text("Creates statements to drop all tables and triggers")
+    opt[Unit]('c', "clear").action((_, c) =>
+      c.copy(reset = true)).text("Creates statements to drop all tables and triggers of the provided mapping.")
 
     help("help").hidden().text("prints help")
 

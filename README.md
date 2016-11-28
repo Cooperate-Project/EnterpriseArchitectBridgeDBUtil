@@ -14,14 +14,14 @@ Usage: HibernateTrigger [options] <input xml> <output sql>
 
   <input xml>              Specify input hibernate xml file
   <output sql>             Specify output sql file
-  -p, --prefix <prefix>    Table and de.cooperateproject.incrementalsync.dbutils.trigger name prefix in database
-  -c, --clear              Creates statements to empty all de.cooperateproject.incrementalsync.dbutils.trigger tables
+  -p, --prefix <prefix>    Table and trigger name prefix in database
+  -r, --reset              Creates statements to empty all trigger tables (with a proper mapping provided).
   -v, --verbose            Enables detailed console output
   -d, --debug <file>       Prints all parsed Tables and Columns into an debug file
-  -e, --event <minutes>    Event interval when old logging entries get removed. Set to 0 or -1 to disable removal.
+  -e, --event <minutes>    Event interval when old logging entries get removed (Minutes). Set to 0 or -1 to disable removal.
   -e, --exclude <type>,<type>,...
-                           Does not print specific hibernate-types (ID, Property, ManyToOne, Bag, CompositeID). Default: Bag
-  -r, --reset              Creates statements to drop all tables and triggers
+                           Does exclude sql commands for specific hibernate-types (ID, Property, ManyToOne, Bag, CompositeID). Default: Bag
+  -c, --clear              Creates statements to drop all tables and triggers of the provided mapping.
 ```
 
 ##Event Scheduler

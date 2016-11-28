@@ -50,7 +50,6 @@ object Table {
   */
 object HibernateTypes extends Enumeration {
   type HibernateTypes = Value
-  // FIXME: Refactoring: Umgang mit HibernateTypes verletzt Lokalitäts-Prinzip
-  // FIXME: Potenzielle Fehlerquelle: Gibt es noch andere Typen?
+  // FIXME: Refactoring: Better Storage of HibernateTypes (expandable)
   val id, property, manytoone, bag, compositeid = Value
 }

@@ -9,7 +9,7 @@ import scala.xml.{NodeSeq, XML}
 
 /**
   * A Parser can read xml files and return all tables and attributes.
-  * This de.cooperateproject.incrementalsync.dbutils.parser is used for the generated hibernate.hbm.xml.
+  * This parser is used for the generated hibernate.hbm.xml.
   *
   * @param inputFile a hibernate xml file to get information from
   * @param verbose   true, if there should be additional logging output

@@ -14,14 +14,14 @@ class DeleteStatement(val tableName: String, val whereClause: String) extends St
     """DELETE FROM `{0}`{1};""".stripMargin)
 
   /**
-    * A sql de.cooperateproject.incrementalsync.dbutils.statement to delete entries from a table.
+    * A sql statement to delete entries from a table.
     *
     * @param tableName the name of the table
     */
   def this(tableName: String) = this(tableName, "")
 
   /**
-    * Creates the textual representation of the sql de.cooperateproject.incrementalsync.dbutils.statement for MySQL Database Systems.
+    * Creates the textual representation of the statement for MySQL Database Systems.
     *
     * @return A String, ready to be executed.
     */
