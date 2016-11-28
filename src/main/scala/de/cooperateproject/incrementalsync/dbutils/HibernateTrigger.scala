@@ -1,17 +1,22 @@
+package de.cooperateproject.incrementalsync.dbutils
+
 import java.io.{File, PrintWriter}
 
-import parser.HibernateTypes.HibernateTypes
-import parser.{HibernateTypes, Parser}
-import statement.{SQLUtil, Statement}
-import trigger.Trigger
+import de.cooperateproject.incrementalsync.dbutils.parser.HibernateTypes.HibernateTypes
+import de.cooperateproject.incrementalsync.dbutils.parser.{HibernateTypes, Parser}
+import de.cooperateproject.incrementalsync.dbutils.statement.{SQLUtil, Statement}
+import de.cooperateproject.incrementalsync.dbutils.trigger.Trigger
 
 import scala.collection.mutable.ListBuffer
 
+/**
+  * Created by seb on 28.11.2016.
+  */
 object HibernateTrigger {
 
   // Used to parse HibernateTypes in the command line input
   implicit val excludeRead: scopt.Read[HibernateTypes.Value] =
-  scopt.Read.reads(HibernateTypes withName _.toLowerCase)
+    scopt.Read.reads(HibernateTypes withName _.toLowerCase)
 
   // This is the command line parser (scopt library)
   val argsParser = new scopt.OptionParser[Config]("HibernateTrigger") {

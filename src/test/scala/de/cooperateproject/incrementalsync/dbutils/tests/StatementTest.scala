@@ -1,5 +1,7 @@
+package de.cooperateproject.incrementalsync.dbutils.tests
+
+import de.cooperateproject.incrementalsync.dbutils.statement._
 import org.scalatest.FunSuite
-import statement._
 
 class StatementTest extends FunSuite {
 

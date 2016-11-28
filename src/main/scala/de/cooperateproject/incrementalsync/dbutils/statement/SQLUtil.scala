@@ -1,4 +1,4 @@
-package statement
+package de.cooperateproject.incrementalsync.dbutils.statement
 
 import java.io.{File, PrintWriter}
 import java.util.Calendar
@@ -23,7 +23,7 @@ object SQLUtil {
     * @param sqlFile    the destination sql file
     * @param statements a list of statements
     */
-  def writeSQL(sqlFile: File, statements: List[Statement]) = {
+  def writeSQL(sqlFile: File, statements: List[Statement]): Unit = {
 
     var outputString = HEADLINE + "\n\n"
 

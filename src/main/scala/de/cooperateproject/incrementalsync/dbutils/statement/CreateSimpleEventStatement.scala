@@ -1,7 +1,7 @@
-package statement
+package de.cooperateproject.incrementalsync.dbutils.statement
 
 /**
-  * A SQL statement to create very simple regular persistent events.
+  * A SQL de.cooperateproject.incrementalsync.dbutils.statement to create very simple regular persistent events.
   *
   * @param eventName         the name of the event
   * @param intervalInMinutes the event interval in minutes
@@ -12,7 +12,7 @@ class CreateSimpleEventStatement(val eventName: String,
                                  val code: String) extends Statement {
 
   /**
-    * Creates the textual representation of the sql statement for MySQL Database Systems.
+    * Creates the textual representation of the sql de.cooperateproject.incrementalsync.dbutils.statement for MySQL Database Systems.
     *
     * @return A String, ready to be executed.
     */

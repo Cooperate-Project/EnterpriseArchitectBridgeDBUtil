@@ -1,4 +1,3 @@
-*.class
 *.log
 
 # sbt specific
@@ -17,3 +16,4 @@ project/
 
 # IntelliJ Idea
 .idea
+*.iml

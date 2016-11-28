@@ -1,12 +1,14 @@
+package de.cooperateproject.incrementalsync.dbutils.tests
+
+import de.cooperateproject.incrementalsync.dbutils.parser.{HibernateTypes, Table}
+import de.cooperateproject.incrementalsync.dbutils.trigger.Trigger
 import org.scalatest.FunSuite
-import parser.{HibernateTypes, Table}
-import trigger.Trigger
 
 class TriggerTest extends FunSuite {
 
   val testTable = new Table("tableName", List("ID"), List("propA", "propB"), List("mto"), List("myBag", "yourBag"), List())
 
-  test("A trigger creates three Create- and five Drop-Statements.") {
+  test("A de.cooperateproject.incrementalsync.dbutils.trigger creates three Create- and five Drop-Statements.") {
     val trigger = new Trigger(testTable, "t_", Seq(), 0)
 
     assert(trigger.getCreateTriggerStatements.length == 3)
@@ -14,7 +16,7 @@ class TriggerTest extends FunSuite {
   }
 
 
-  test("The created update trigger works with column names.") {
+  test("The created update de.cooperateproject.incrementalsync.dbutils.trigger works with column names.") {
 
     val trigger = new Trigger(testTable, "t_", Seq(), 0)
 
@@ -23,7 +25,7 @@ class TriggerTest extends FunSuite {
     assert(updateTriggerStatement.contains("ID") && updateTriggerStatement.contains("propA"))
   }
 
-  test("The created update trigger excludes HibernateTypes correctly!") {
+  test("The created update de.cooperateproject.incrementalsync.dbutils.trigger excludes HibernateTypes correctly!") {
 
     val trigger = new Trigger(testTable, "t_", Seq(HibernateTypes.property, HibernateTypes.manytoone), 0)
 

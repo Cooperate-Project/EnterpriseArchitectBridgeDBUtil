@@ -14,8 +14,8 @@ Usage: HibernateTrigger [options] <input xml> <output sql>
 
   <input xml>              Specify input hibernate xml file
   <output sql>             Specify output sql file
-  -p, --prefix <prefix>    Table and trigger name prefix in database
-  -c, --clear              Creates statements to empty all trigger tables
+  -p, --prefix <prefix>    Table and de.cooperateproject.incrementalsync.dbutils.trigger name prefix in database
+  -c, --clear              Creates statements to empty all de.cooperateproject.incrementalsync.dbutils.trigger tables
   -v, --verbose            Enables detailed console output
   -d, --debug <file>       Prints all parsed Tables and Columns into an debug file
   -e, --event <minutes>    Event interval when old logging entries get removed. Set to 0 or -1 to disable removal.

@@ -1,7 +1,7 @@
-package statement
+package de.cooperateproject.incrementalsync.dbutils.statement
 
 /**
-  * A sql statement to delete entries from a table.
+  * A sql de.cooperateproject.incrementalsync.dbutils.statement to delete entries from a table.
   *
   * @param tableName   the name of the table
   * @param whereClause the specification, which entries should be deleted (if empty, everything will be deleted)
@@ -9,14 +9,14 @@ package statement
 class DeleteStatement(val tableName: String, val whereClause: String) extends Statement {
 
   /**
-    * A sql statement to delete entries from a table.
+    * A sql de.cooperateproject.incrementalsync.dbutils.statement to delete entries from a table.
     *
     * @param tableName the name of the table
     */
   def this(tableName: String) = this(tableName, "")
 
   /**
-    * Creates the textual representation of the sql statement for MySQL Database Systems.
+    * Creates the textual representation of the sql de.cooperateproject.incrementalsync.dbutils.statement for MySQL Database Systems.
     *
     * @return A String, ready to be executed.
     */

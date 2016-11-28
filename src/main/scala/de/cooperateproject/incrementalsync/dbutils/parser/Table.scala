@@ -1,4 +1,4 @@
-package parser
+package de.cooperateproject.incrementalsync.dbutils.parser
 
 /**
   * A Table contains attributes and is the database representation of an model.

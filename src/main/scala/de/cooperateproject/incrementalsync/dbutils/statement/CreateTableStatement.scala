@@ -1,4 +1,4 @@
-package statement
+package de.cooperateproject.incrementalsync.dbutils.statement
 
 /**
   * A SQL Statement to create a table.
@@ -20,7 +20,7 @@ class CreateTableStatement(val tableName: String,
   def this(tableName: String, content: Map[String, String]) = this(tableName, content, "")
 
   /**
-    * Creates the textual representation of the sql statement for MySQL Database Systems.
+    * Creates the textual representation of the sql de.cooperateproject.incrementalsync.dbutils.statement for MySQL Database Systems.
     *
     * @return A String, ready to be executed.
     */

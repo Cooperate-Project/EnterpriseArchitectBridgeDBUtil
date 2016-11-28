@@ -1,7 +1,9 @@
+package de.cooperateproject.incrementalsync.dbutils.tests
+
 import java.io.File
 
+import de.cooperateproject.incrementalsync.dbutils.parser.{Parser, Table}
 import org.scalatest.FunSuite
-import parser.{Parser, Table}
 
 class ParserTest extends FunSuite {
 

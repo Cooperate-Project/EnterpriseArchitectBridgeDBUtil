@@ -1,12 +1,12 @@
-package statement
+package de.cooperateproject.incrementalsync.dbutils.statement
 
-import statement.TriggerTypes.TriggerTypes
+import de.cooperateproject.incrementalsync.dbutils.statement.TriggerTypes.TriggerTypes
 
 /**
-  * A sql statement to create a MySQL Trigger.
+  * A sql de.cooperateproject.incrementalsync.dbutils.statement to create a MySQL Trigger.
   *
-  * @param triggerName the name of the trigger
-  * @param triggerType the type of the trigger (INSERT, UPDATE, DELETE)
+  * @param triggerName the name of the de.cooperateproject.incrementalsync.dbutils.trigger
+  * @param triggerType the type of the de.cooperateproject.incrementalsync.dbutils.trigger (INSERT, UPDATE, DELETE)
   * @param tableName   the name of the table to listen to
   * @param forEachRow  true, if code should be executed for each affected row
   * @param code        the code (e.g. statements) to execute when triggered
@@ -18,7 +18,7 @@ class CreateTriggerStatement(val triggerName: String,
                              val code: String) extends Statement {
 
   /**
-    * Creates the textual representation of the sql statement for MySQL Database Systems.
+    * Creates the textual representation of the sql de.cooperateproject.incrementalsync.dbutils.statement for MySQL Database Systems.
     *
     * @return A String, ready to be executed.
     */

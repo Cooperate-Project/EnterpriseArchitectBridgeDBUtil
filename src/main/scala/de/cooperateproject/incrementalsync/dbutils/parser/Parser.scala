@@ -1,15 +1,15 @@
-package parser
+package de.cooperateproject.incrementalsync.dbutils.parser
 
 import java.io.File
 
-import parser.HibernateTypes.HibernateTypes
+import de.cooperateproject.incrementalsync.dbutils.parser.HibernateTypes.HibernateTypes
 
 import scala.collection.mutable.ListBuffer
 import scala.xml.{NodeSeq, XML}
 
 /**
   * A Parser can read xml files and return all tables and attributes.
-  * This parser is used for the generated hibernate.hbm.xml.
+  * This de.cooperateproject.incrementalsync.dbutils.parser is used for the generated hibernate.hbm.xml.
   *
   * @param inputFile a hibernate xml file to get information from
   * @param verbose   true, if there should be additional logging output

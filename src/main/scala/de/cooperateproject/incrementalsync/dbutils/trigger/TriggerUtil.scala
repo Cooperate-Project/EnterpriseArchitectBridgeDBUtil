@@ -1,11 +1,11 @@
-package trigger
+package de.cooperateproject.incrementalsync.dbutils.trigger
 
-import parser.HibernateTypes.HibernateTypes
-import parser.{HibernateTypes, Table}
-import statement._
+import de.cooperateproject.incrementalsync.dbutils.parser.HibernateTypes.HibernateTypes
+import de.cooperateproject.incrementalsync.dbutils.parser.{HibernateTypes, Table}
+import de.cooperateproject.incrementalsync.dbutils.statement._
 
 /**
-  * Provides Utility Function to create common SQL statements for trigger & other.
+  * Provides Utility Function to create common SQL statements for de.cooperateproject.incrementalsync.dbutils.trigger & other.
   */
 object TriggerUtil {
 
@@ -92,14 +92,14 @@ object TriggerUtil {
     * @return a CreateTrigger-Statement
     */
   private[trigger] def createCommonDeleteTrigger(table: Table, prefix: String): CreateTriggerStatement =
-  createInsertOrDeleteTrigger(table, prefix, isInsertTrigger = false)
+    createInsertOrDeleteTrigger(table, prefix, isInsertTrigger = false)
 
   /**
     * This private function is used to create Insert or Delete triggers (nearly everything is common)
     *
     * @param table           the table to listen to
     * @param prefix          the prefix of the logging table
-    * @param isInsertTrigger true, if a createTrigger-statement for Insert Triggers should be created
+    * @param isInsertTrigger true, if a createTrigger-de.cooperateproject.incrementalsync.dbutils.statement for Insert Triggers should be created
     *                        false, if it should be a Delete Trigger
     * @return a CreateTrigger-Statement
     */
