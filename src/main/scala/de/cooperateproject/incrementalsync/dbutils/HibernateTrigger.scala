@@ -20,7 +20,7 @@ object HibernateTrigger {
     scopt.Read.reads(HibernateTypes withName _.toLowerCase)
 
   // This is the command line parser (scopt library)
-  val argsParser = new scopt.OptionParser[Config]("HibernateTrigger") {
+  val argsParser = new scopt.OptionParser[Config]("IncrementalDBSyncUtils") {
     head("Hibernate XML to SQL Trigger Generator")
 
     arg[File]("<input xml>").required().action((x, c) =>
