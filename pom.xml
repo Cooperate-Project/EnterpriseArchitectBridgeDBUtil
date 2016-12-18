@@ -1,13 +1,18 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<!-- options of the project -->
+	<parent>
+		<groupId>de.cooperateproject</groupId>
+		<artifactId>de.cooperateproject.parent.maven</artifactId>
+		<version>1.0.2</version>
+	</parent>
 	<groupId>de.cooperateproject.incrementalsync.dbutils</groupId>
 	<artifactId>incremental-db-sync-utils</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>incremental-db-sync-utils</name>
-	<!-- set encoding of this project to UTF-8 to avoid warnings -->
+	<name>IncrementalDBSetupUtil</name>
+
+
 	<properties>
 		<main.class>de.cooperateproject.incrementalsync.dbutils.HibernateTrigger</main.class>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -15,7 +20,15 @@
 		<encoding>UTF-8</encoding>
 		<scala.version>2.11.8</scala.version>
 		<scala.compat.version>2.11</scala.compat.version>
+		<project.finalname>${project.name}-${project.version}</project.finalname>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<bintray.deploy.plugin.version>0.1.1</bintray.deploy.plugin.version>
+		<bintray.deploy.serverId>cooperate-bintray</bintray.deploy.serverId>
+		<bintray.deploy.subject>cooperate-project</bintray.deploy.subject>
+		<bintray.deploy.repository>EnterpriseArchitectBridgeDBUtil</bintray.deploy.repository>
+		<bintray.deploy.package>bundledProducts</bintray.deploy.package>
+		<bintray.deploy.file>${project.build.directory}/${project.finalname}.jar</bintray.deploy.file>
+		<bintray.deploy.replaceIfSnapshot>true</bintray.deploy.replaceIfSnapshot>
 	</properties>
 	<!-- set up build process of this project -->
 	<build>
@@ -121,6 +134,8 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+					<finalName>${project.finalname}</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 				<executions>
 					<execution>
@@ -132,6 +147,30 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>de.cooperateproject.maven</groupId>
+				<artifactId>de.cooperateproject.maven.bintray.deploy</artifactId>
+				<version>${bintray.deploy.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>bintray-deployment</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 	<!-- set up dependencies of this project -->
