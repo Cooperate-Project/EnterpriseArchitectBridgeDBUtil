@@ -9,7 +9,7 @@ class ParserTest extends FunSuite {
 
   test("Parser properly reads a test input file.") {
 
-    val parser = new Parser(new File("src\\test\\resources\\test.xml"), false)
+    val parser = new Parser(new File("src/test/resources/test.xml"), false)
     val tables = parser.parseXML
 
     // 2 Classes / Tables
